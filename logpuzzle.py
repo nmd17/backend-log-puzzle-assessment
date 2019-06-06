@@ -29,7 +29,16 @@ def read_urls(filename):
     Screens out duplicate urls and returns the urls sorted into
     increasing order."""
     # +++your code here+++
-    pass
+    urls = []
+    with open(filename) as f:
+        for line in f:
+            if re.match("(.*)puzzle(.*)", line):
+                x = re.findall("/edu\S+", line)
+                urls.append('http://code.google.com' + x[0])
+        
+    return sorted(list(set(urls)))
+
+             
 
 
 def download_images(img_urls, dest_dir):
@@ -40,8 +49,35 @@ def download_images(img_urls, dest_dir):
     with an img tag to show each local image file.
     Creates the directory if necessary.
     """
-    # +++your code here+++
-    pass
+
+    if not os.path.isdir(dest_dir):
+        os.mkdir(dest_dir)
+
+    img_paths = []
+    
+    for i in img_urls:
+        print("beginning file download...")
+        image_name = '/img' + str(img_urls.index(i))
+        urllib.urlretrieve(i, dest_dir + image_name + '.jpg') 
+
+        image_path = '<img src="./' + dest_dir + image_name + '.jpg">'
+        img_paths.append(image_path)
+    
+    img_html = ''.join(img_paths)
+
+    f = open(dest_dir + '/index.html', 'w')
+    message = """
+    <head></head>
+    <body>""" + img_html + """
+    </body>"""
+
+    f.close()
+
+    
+    
+
+        
+
 
 
 def create_parser():
